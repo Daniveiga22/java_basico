@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio — Laços de Repetição · Aula 03</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#fff1f2;min-height:100vh;padding:22px}
+.wrap{max-width:940px;margin:0 auto;display:flex;flex-direction:column;gap:11px}
+.brief{border:1px solid #fda4af;border-radius:12px;overflow:hidden;background:#fff}
+.bt{background:#fff1f2;padding:17px 19px;border-bottom:1px solid #fda4af}
+.badge{font-size:11px;font-weight:600;background:#e11d48;color:#fff;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:7px}
+.btitle{font-size:19px;font-weight:600;color:#881337;margin-bottom:3px}
+.bsub{font-size:13px;color:#be123c}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.two{grid-template-columns:1fr}}
+.colt{font-size:11px;font-weight:600;color:#64748b;margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em}
+.req-wrap{display:flex;flex-direction:column;gap:5px}
+.ri2{display:flex;gap:9px;align-items:flex-start}
+.rc{width:19px;height:19px;min-width:19px;border-radius:5px;border:1.5px solid #cbd5e1;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:2px;background:#fff;transition:all .15s;flex-shrink:0}
+.rc:hover{border-color:#e11d48;background:#fff1f2}.rc.on{background:#22c55e;border-color:#22c55e}
+.rc svg{display:none}.rc.on svg{display:block}
+.rt2{font-size:12.5px;color:#475569;line-height:1.5}.rt2.done{color:#94a3b8;text-decoration:line-through}
+code{font-family:'Courier New',monospace;font-size:11.5px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+.crit-list{display:flex;flex-direction:column;gap:5px}
+.ci{display:flex;align-items:flex-start;gap:7px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:7px 10px;font-size:12px;color:#475569}
+.cd{width:5px;height:5px;min-width:5px;border-radius:50%;background:#e11d48;flex-shrink:0;margin-top:5px}
+.cd.g{background:#22c55e}
+.pw{border:1px solid #e2e8f0;border-radius:12px;padding:13px 15px;background:#fff}
+.pl{font-size:12px;color:#64748b;margin-bottom:7px;display:flex;justify-content:space-between}
+.pl strong{color:#1e293b;font-weight:600}
+.pbg{height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:9px}
+.pfill{height:100%;background:#e11d48;border-radius:4px;transition:width .4s ease;width:0%}
+.pm{font-size:12px;color:#64748b;font-style:italic}
+.tr{display:flex;align-items:center;gap:9px;border:1px solid #fda4af;border-radius:12px;padding:11px 15px;background:#fff;flex-wrap:wrap}
+.tnum{font-size:26px;font-weight:500;font-family:'Courier New',monospace;color:#e11d48;min-width:80px;transition:color .3s}
+.tnum.warn{color:#d97706}.tnum.danger{color:#dc2626}
+.tinfo{flex:1;min-width:130px}.tinfo p{font-size:12px;color:#64748b;margin-top:1px}
+.tinfo strong{font-size:13px;color:#1e293b;font-weight:600}
+.tbtn{font-size:12px;padding:6px 14px;border-radius:7px;border:none;background:#e11d48;color:#fff;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.tbtn:hover{background:#be123c}.tbtn.sec{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.tbtn.sec:hover{background:#e2e8f0}.tbtn:disabled{opacity:.4;pointer-events:none}
+.tabs{display:flex;gap:0;border-bottom:1px solid #fda4af;overflow-x:auto}
+.tab{font-size:12px;font-weight:600;padding:9px 16px;cursor:pointer;color:#64748b;transition:all .15s;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:#be123c;border-bottom-color:#e11d48}
+.tab:hover:not(.on){color:#e11d48}
+.tab-pane{display:none;padding:16px 19px}
+.tab-pane.on{display:block}
+.desc-txt{font-size:13px;color:#475569;line-height:1.8}
+.desc-txt strong{color:#1e293b;font-weight:600}
+.code-blk{background:#1e293b;border-radius:8px;padding:13px 16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.8;color:#94a3b8;margin:10px 0;overflow-x:auto;white-space:pre}
+.k{color:#93c5fd}.t{color:#34d399}.v{color:#6ee7b7}.s{color:#fda4af}.c{color:#475569;font-style:italic}.fn{color:#fbbf24}.cl{color:#c4b5fd}.an{color:#fb923c}
+.ent{border:1px solid #fda4af;border-radius:12px;padding:13px 15px;background:#fff1f2}
+.et{font-size:11px;font-weight:600;color:#be123c;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.ep{font-size:13px;color:#475569;line-height:1.8}
+.sbox{display:none;background:#fff1f2;border:2px solid #fda4af;border-radius:14px;padding:22px;text-align:center}
+.sbox.show{display:block;animation:pop .4s ease}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.sbox h3{font-size:18px;font-weight:700;color:#e11d48;margin-bottom:7px}
+.sbox p{font-size:13px;color:#881337;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brief">
+    <div class="bt">
+      <div class="badge">Desafio autônomo · 3 Níveis · 65 minutos</div>
+      <div class="btitle">⚽ Liga das Nações — Sistema de Estatísticas de Campeonato</div>
+      <div class="bsub">for, while, do-while, break, continue e laços aninhados integrados em um sistema real de gestão de competição esportiva.</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab on" onclick="showTab(0)">🟢 Básico</div>
+      <div class="tab" onclick="showTab(1)">🟡 Médio</div>
+      <div class="tab" onclick="showTab(2)">🔴 Avançado</div>
+    </div>
+
+    <div class="tab-pane on" id="tp0">
+      <div class="desc-txt">
+        <strong>Nível Básico — 18 min</strong><br><br>
+        Crie <code>Campeonato.java</code>. Use <strong>for</strong> para processar os resultados de <strong>N rodadas fixas</strong> de um time.<br><br>
+        <strong>Para cada rodada, leia com Scanner:</strong><br>
+        &nbsp;&nbsp;• Gols marcados pelo time (<code>int</code>)<br>
+        &nbsp;&nbsp;• Gols sofridos (<code>int</code>)<br><br>
+        <strong>Calcule e acumule:</strong><br>
+        &nbsp;&nbsp;• Vitórias (gols marcados > sofridos) → +3 pts<br>
+        &nbsp;&nbsp;• Empates (gols iguais) → +1 pt<br>
+        &nbsp;&nbsp;• Derrotas → 0 pts<br>
+        &nbsp;&nbsp;• Total de gols marcados, sofridos e saldo (marcados − sofridos)<br><br>
+        <strong>Saída esperada (N=3, resultados: 2×1, 0×0, 1×3):</strong>
+      </div>
+      <div class="code-blk">╔═══════════════════════════════╗
+║   RESULTADO DO CAMPEONATO     ║
+╚═══════════════════════════════╝
+Rodada 1: 2 x 1 → VITÓRIA  (+3 pts)
+Rodada 2: 0 x 0 → EMPATE   (+1 pt)
+Rodada 3: 1 x 3 → DERROTA  (+0 pts)
+───────────────────────────────
+Pontos   : 4
+Vitórias : 1 | Empates: 1 | Derrotas: 1
+Gols: 3 marcados / 4 sofridos / saldo -1</div>
+    </div>
+
+    <div class="tab-pane" id="tp1">
+      <div class="desc-txt">
+        <strong>Nível Médio — 22 min</strong><br><br>
+        Crie <code>CampeonatoWhile.java</code>. Agora o número de rodadas é <strong>desconhecido</strong> — use <strong>while</strong> com sentinela para ler até o usuário digitar <code>-1 -1</code>.<br><br>
+        <strong>Além de acumular pontos e gols, calcule:</strong><br>
+        &nbsp;&nbsp;• Maior goleada a favor: rodada em que o saldo foi o mais positivo<br>
+        &nbsp;&nbsp;• Pior derrota: rodada em que o saldo foi o mais negativo<br>
+        &nbsp;&nbsp;• Sequência atual: <code>int sequencia</code> que conta vitórias seguidas (reseta a 0 na primeira não-vitória)<br>
+        &nbsp;&nbsp;• Maior sequência de vitórias durante todo o campeonato<br><br>
+        <strong>Teste:</strong> resultados 3-0, 2-1, 1-1, 0-2, 4-0, 3-1, -1 -1<br>
+        → maior sequência = 2 (rodadas 5 e 6); pior derrota = rodada 4 (saldo −2)
+      </div>
+    </div>
+
+    <div class="tab-pane" id="tp2">
+      <div class="desc-txt">
+        <strong>Nível Avançado — 25 min</strong><br><br>
+        Crie <code>LigaCompleta.java</code>. Sistema completo com <strong>múltiplos times</strong> e <strong>menu do-while</strong>.<br><br>
+        1. <strong>Menu principal (do-while):</strong>
+        <div class="code-blk">╔═══════════════════════════════════╗
+║   LIGA DAS NAÇÕES              ║
+╠═══════════════════════════════════╣
+║  1. Cadastrar time e rodadas      ║
+║  2. Ver tabela de classificação   ║
+║  3. Ver artilharia (gols/rodada)  ║
+║  0. Encerrar                      ║
+╚═══════════════════════════════════╝</div>
+        2. <strong>Opção 1:</strong> leia nome do time e N rodadas com <code>for</code>. Calcule pontos, saldo e gols.<br>
+        &nbsp;&nbsp;→ Suporte para até 4 times (use 4 variáveis separadas por time)<br><br>
+        3. <strong>Opção 2 — Tabela:</strong> use <code>for</code> aninhado para ordenar (bubble sort manual com 4 variáveis) e exibir classificação:<br>
+        <div class="code-blk">Pos | Time       | Pts | V  E  D | GM  GS  Saldo
+────────────────────────────────────────────
+ 1  | Corinthians|  9  | 3  0  0 | 7   2   +5
+ 2  | São Paulo  |  4  | 1  1  1 | 4   4    0</div>
+        4. <strong>Opção 3 — Artilharia:</strong> use <code>for</code> para calcular a <strong>média de gols por rodada</strong> de cada time e listar do maior para o menor<br><br>
+        5. <strong>Use <code>continue</code></strong> para pular times não cadastrados na exibição da tabela
+
+        <div class="two" style="margin-top:14px">
+          <div>
+            <div class="colt">Critérios de avaliação</div>
+            <div class="crit-list">
+              <div class="ci"><div class="cd"></div><code>for</code> com número fixo de rodadas, acumulando V/E/D e gols</div>
+              <div class="ci"><div class="cd"></div><code>while</code> com sentinela <code>-1 -1</code> e rastreamento de sequência</div>
+              <div class="ci"><div class="cd"></div><code>do-while</code> para menu persistente com opção 0 de saída</div>
+              <div class="ci"><div class="cd"></div>Laço aninhado para ordenar a classificação (bubble sort)</div>
+              <div class="ci"><div class="cd"></div><code>continue</code> para pular times não cadastrados na tabela</div>
+              <div class="ci"><div class="cd g"></div>Bônus: detectar time invicto (nenhuma derrota)</div>
+              <div class="ci"><div class="cd g"></div>Bônus: calcular aproveitamento % (pts_obtidos / pts_possíveis × 100)</div>
+            </div>
+          </div>
+          <div>
+            <div class="colt">Checklist de entrega</div>
+            <div class="req-wrap" id="req-list"></div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="ent">
+    <div class="et">Fórmulas e dicas rápidas</div>
+    <div class="ep">
+      <strong>Pontuação:</strong> <code>gM > gS → +3 pts | gM == gS → +1 pt | gM &lt; gS → 0 pts</code><br>
+      <strong>Sequência de vitórias:</strong> <code>if (vitória) seq++; else seq = 0; if (seq > maxSeq) maxSeq = seq;</code><br>
+      <strong>Bubble sort com 4 times:</strong> compare pontos de cada par com dois for aninhados, troque com variável auxiliar<br>
+      <strong>Aproveitamento:</strong> <code>rodadas * 3</code> = pontos possíveis; <code>(pontos * 100.0) / (rodadas * 3)</code> = aproveitamento %<br><br>
+      <strong>Valores de teste básico:</strong> N=3, rodadas: 2×1 (vitória), 0×0 (empate), 1×3 (derrota)<br>
+      → Pontos=4 | Saldo=-1 | Gols marcados=3 | Gols sofridos=4
+    </div>
+  </div>
+
+  <div class="pw">
+    <div class="pl"><strong>Progresso</strong><span id="ptxt">0 de 8 concluídos</span></div>
+    <div class="pbg"><div class="pfill" id="pfill"></div></div>
+    <div class="pm" id="pmsg">Comece pelo nível básico: crie Campeonato.java com for e leia N rodadas.</div>
+  </div>
+
+  <div class="tr">
+    <div class="tnum" id="tnum">65:00</div>
+    <div class="tinfo"><strong>Cronômetro</strong><p id="tmsg">Inicie quando o docente autorizar</p></div>
+    <button class="tbtn" id="tbtn" onclick="timerClick()">Iniciar</button>
+    <button class="tbtn sec" onclick="timerReset()">Zerar</button>
+  </div>
+
+  <div class="sbox" id="success">
+    <h3>⚽ Campeão!</h3>
+    <p>for, while, do-while, break, continue e laço aninhado — dominados!<br>Próxima aula: <strong>Aula 04 — Métodos e Funções em Java!</strong></p>
+  </div>
+</div>
+
+<script>
+const REQS=[
+  {t:'Criar <code>Campeonato.java</code> com <code>for</code> lendo N rodadas de gols marcados e sofridos'},
+  {t:'Calcular V/E/D e pontuação corretamente (+3/+1/0) para cada rodada'},
+  {t:'Exibir relatório final com pontos, gols marcados/sofridos e saldo'},
+  {t:'Criar <code>CampeonatoWhile.java</code> com <code>while</code> e sentinela <code>-1 -1</code>'},
+  {t:'Rastrear maior goleada, pior derrota e maior sequência de vitórias'},
+  {t:'Criar <code>LigaCompleta.java</code> com menu <code>do-while</code> e opções 0-3'},
+  {t:'Opção 1: cadastrar até 4 times com laço <code>for</code> por rodadas'},
+  {t:'Opção 2: tabela ordenada com laço aninhado (bubble sort) e <code>continue</code> para times vazios'},
+];
+const MSGS=[
+  'Declare as variáveis acumuladoras e use for para ler cada rodada.',
+  'Calcule V/E/D e adicione os pontos corretos em cada iteração.',
+  'Básico pronto! Exiba o relatório final formatado.',
+  'Crie CampeonatoWhile.java — o while lê até o usuário digitar -1 -1.',
+  'Rastreie sequência: se vitória seq++, senão seq=0. Guarde o máximo!',
+  'Médio concluído! Crie LigaCompleta.java com do-while e menu de 4 opções.',
+  'Opção 1 ok! Implemente a tabela ordenada com laço aninhado.',
+  'Tudo pronto! Teste com 4 times e verifique o ordenamento da classificação.',
+];
+const TOTAL_SEC = 65*60;
+let done=new Set(),ticking=false,tSec=TOTAL_SEC,tInterval=null;
+function showTab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',i===j));
+  document.querySelectorAll('.tab-pane').forEach((p,j)=>p.classList.toggle('on',i===j));
+}
+function buildReqs(){
+  const el=document.getElementById('req-list');
+  REQS.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='ri2';d.style.marginBottom='5px';
+    d.innerHTML=`<div class="rc" id="rc-${i}" onclick="chk(${i})"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="rt2" id="rt-${i}">${r.t}</div>`;
+    el.appendChild(d);
+  });
+}
+function chk(i){
+  if(done.has(i)){done.delete(i);document.getElementById('rc-'+i).classList.remove('on');document.getElementById('rt-'+i).classList.remove('done');}
+  else{done.add(i);document.getElementById('rc-'+i).classList.add('on');document.getElementById('rt-'+i).classList.add('done');}
+  const n=done.size;
+  document.getElementById('pfill').style.width=Math.round((n/REQS.length)*100)+'%';
+  document.getElementById('ptxt').textContent=n+' de '+REQS.length+' concluídos';
+  document.getElementById('pmsg').textContent=MSGS[Math.min(n,MSGS.length-1)];
+  if(n===REQS.length)document.getElementById('success').classList.add('show');
+  else document.getElementById('success').classList.remove('show');
+}
+function timerClick(){
+  if(!ticking){
+    ticking=true;document.getElementById('tbtn').textContent='⏸ Pausar';document.getElementById('tbtn').style.background='#475569';
+    document.getElementById('tmsg').textContent='Em andamento';
+    tInterval=setInterval(()=>{
+      tSec--;const m=Math.floor(tSec/60),s=tSec%60;
+      const el=document.getElementById('tnum');
+      el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+      el.className='tnum'+(tSec<=120?' danger':tSec<=600?' warn':'');
+      if(tSec===2100)document.getElementById('tmsg').textContent='35 min — básico e médio prontos?';
+      if(tSec===600)document.getElementById('tmsg').textContent='10 min — finalize e teste!';
+      if(tSec===120)document.getElementById('tmsg').textContent='2 min — chame o docente!';
+      if(tSec<=0){clearInterval(tInterval);ticking=false;document.getElementById('tbtn').disabled=true;document.getElementById('tmsg').textContent='Tempo esgotado!';}
+    },1000);
+  }else{
+    ticking=false;clearInterval(tInterval);
+    document.getElementById('tbtn').textContent='Continuar';document.getElementById('tbtn').style.background='#e11d48';
+  }
+}
+function timerReset(){
+  clearInterval(tInterval);ticking=false;tSec=TOTAL_SEC;
+  document.getElementById('tnum').textContent='65:00';document.getElementById('tnum').className='tnum';
+  document.getElementById('tbtn').textContent='Iniciar';document.getElementById('tbtn').style.background='#e11d48';
+  document.getElementById('tbtn').disabled=false;
+  document.getElementById('tmsg').textContent='Inicie quando o docente autorizar';
+}
+buildReqs();
+</script>
+
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #fda4af;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:999;gap:12px">
+  <a href="java_a03_pratica_guiada.html" style="display:inline-flex;align-items:center;gap:7px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 16px;border-radius:8px;text-decoration:none;white-space:nowrap;border:1px solid #e2e8f0;transition:background .15s" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">← Prática Guiada</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1">Aula 03 · 4 de 5 · Desafio Autônomo</div>
+  <a href="java_a03_feedback.html" style="display:inline-flex;align-items:center;gap:7px;background:#e11d48;color:#fff;font-size:12px;font-weight:600;padding:7px 16px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background .15s" onmouseover="this.style.background='#be123c'" onmouseout="this.style.background='#e11d48'">Painel de Feedback →</a>
+</div>
+<div style="height:52px"></div>
+</body>
+</html>

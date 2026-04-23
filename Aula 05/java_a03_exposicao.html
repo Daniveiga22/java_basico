@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exposição — Laços de Repetição · Aula 03</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f172a;--surface:#1e293b;--surface2:#263248;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--accent3:#34d399;--accent4:#fb923c;--accent5:#f472b6;
+  --text:#e2e8f0;--muted:#64748b;--java:#f89820;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* TOP BAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.java-badge{background:var(--java);color:#000;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:1px}
+.lesson-info{font-size:13px;color:var(--muted)}
+.lesson-info span{color:var(--text);font-weight:600}
+.nav-dots{display:flex;gap:5px}
+.nd{width:22px;height:4px;border-radius:2px;background:var(--border)}
+.nd.active{background:var(--accent)}
+.nd.done{background:var(--accent3)}
+
+/* HERO */
+.hero{padding:64px 40px 40px;max-width:880px;margin:0 auto;animation:fu .6s ease}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.aula-tag{display:inline-flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:22px}
+.aula-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{font-size:44px;font-weight:800;line-height:1.05;margin-bottom:14px;background:linear-gradient(135deg,var(--text) 35%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.8;max-width:580px}
+
+/* CONTENT */
+.content{max-width:880px;margin:0 auto;padding:0 40px 100px}
+.section{margin-bottom:52px;animation:fu .5s ease both}
+.section:nth-child(1){animation-delay:.1s}.section:nth-child(2){animation-delay:.2s}
+.section:nth-child(3){animation-delay:.3s}.section:nth-child(4){animation-delay:.25s}
+.section:nth-child(5){animation-delay:.35s}.section:nth-child(6){animation-delay:.4s}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h2{font-size:22px;font-weight:700;margin-bottom:14px}
+p{font-size:14px;line-height:1.85;color:var(--muted);margin-bottom:14px}
+p strong{color:var(--text);font-weight:600}
+
+/* COMPARISON CARDS */
+.loop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+@media(max-width:640px){.loop-grid{grid-template-columns:1fr}}
+.loop-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:border-color .2s,transform .15s;cursor:default}
+.loop-card:hover{transform:translateY(-2px)}
+.loop-card.for-c{border-top:3px solid var(--accent)}
+.loop-card.while-c{border-top:3px solid var(--accent2)}
+.loop-card.do-c{border-top:3px solid var(--accent3)}
+.lc-name{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;margin-bottom:6px}
+.lc-name.for-c{color:var(--accent)}.lc-name.while-c{color:var(--accent2)}.lc-name.do-c{color:var(--accent3)}
+.lc-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.lc-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;letter-spacing:.5px}
+.lc-badge.for-c{background:rgba(56,189,248,.12);color:var(--accent)}
+.lc-badge.while-c{background:rgba(129,140,248,.12);color:var(--accent2)}
+.lc-badge.do-c{background:rgba(52,211,153,.12);color:var(--accent3)}
+.lc-use{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+/* CODE BLOCK */
+.cb{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:18px 0}
+.cb-head{background:var(--surface2);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;justify-content:space-between}
+.cb-lang{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--java);font-weight:600;letter-spacing:1px}
+.cp-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 10px;border-radius:4px;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s}
+.cp-btn:hover{border-color:var(--accent);color:var(--accent)}
+pre{padding:18px 22px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75}
+.kw{color:#f472b6}.tp{color:#38bdf8}.str{color:#86efac}.cm{color:#475569;font-style:italic}
+.num{color:#fbbf24}.vr{color:#e2e8f0}.fn{color:#c084fc}.op{color:#fb923c;font-weight:600}
+
+/* CALLOUT */
+.callout{display:flex;gap:12px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent4);border-radius:8px;padding:14px 18px;margin:16px 0;align-items:flex-start}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.callout-body{font-size:13px;line-height:1.7;color:var(--muted)}
+.callout-body strong{color:var(--accent4)}
+.callout.tip{border-left-color:var(--accent3)}
+.callout.tip .callout-body strong{color:var(--accent3)}
+.callout.warn{border-left-color:var(--accent5)}
+.callout.warn .callout-body strong{color:var(--accent5)}
+.callout.info{border-left-color:var(--accent)}
+.callout.info .callout-body strong{color:var(--accent)}
+
+/* ANATOMY */
+.anatomy{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+.anatomy-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.anatomy-code{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2.2;padding:0}
+.part{position:relative;display:inline}
+.part-init{color:var(--accent);border-bottom:2px solid var(--accent)}
+.part-cond{color:var(--accent2);border-bottom:2px solid var(--accent2)}
+.part-incr{color:var(--accent3);border-bottom:2px solid var(--accent3)}
+.part-body{color:var(--accent4);border-bottom:2px solid var(--accent4)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* COMPARISON TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin:18px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--surface2)}
+th{padding:11px 16px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--muted)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+td:first-child{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:600}
+
+/* INTERACTIVE COUNTER */
+.demo-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+.demo-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.demo-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.demo-label{font-size:13px;color:var(--muted)}
+.demo-input{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;width:80px;text-align:center;outline:none;transition:border-color .2s}
+.demo-input:focus{border-color:var(--accent)}
+.loop-type-sel{display:flex;gap:6px}
+.lts{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .2s}
+.lts.on-for{background:rgba(56,189,248,.15);color:var(--accent);border-color:var(--accent)}
+.lts.on-while{background:rgba(129,140,248,.15);color:var(--accent2);border-color:var(--accent2)}
+.lts.on-do{background:rgba(52,211,153,.15);color:var(--accent3);border-color:var(--accent3)}
+.demo-output{background:var(--bg);border-radius:8px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent3);line-height:1.7;border:1px solid var(--border);min-height:60px;white-space:pre-wrap;word-break:break-all}
+.run-btn{background:var(--accent);color:#000;border:none;padding:8px 22px;border-radius:7px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Sora',sans-serif;transition:opacity .2s;margin-top:10px}
+.run-btn:hover{opacity:.85}
+
+/* NAV */
+.nav-footer{max-width:880px;margin:0 auto;padding:0 40px 60px;display:flex;justify-content:space-between;align-items:center}
+.nav-btn{display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:11px 22px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;transition:all .2s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-btn.next{background:var(--accent);border-color:var(--accent);color:#000}
+.nav-btn.next:hover{background:#7dd3fc;border-color:#7dd3fc;color:#000}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="java-badge">JAVA</span>
+    <span class="lesson-info">Aula 03 — <span>Laços de Repetição</span></span>
+  </div>
+  <div class="nav-dots">
+    <div class="nd active" title="Exposição"></div>
+    <div class="nd" title="Demo ao Vivo"></div>
+    <div class="nd" title="Prática Guiada"></div>
+    <div class="nd" title="Desafio"></div>
+    <div class="nd" title="Feedback"></div>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="aula-tag"><span class="dot"></span>Aula 03 · Exposição Teórica</div>
+  <h1>Laços de<br>Repetição</h1>
+  <p class="hero-sub">Laços permitem executar um bloco de código múltiplas vezes sem repetir o código manualmente. Java tem três estruturas principais: <strong>for</strong>, <strong>while</strong> e <strong>do-while</strong> — cada uma com seu caso de uso ideal.</p>
+</div>
+
+<div class="content">
+
+  <!-- VISÃO GERAL -->
+  <div class="section">
+    <div class="sec-label">Visão Geral</div>
+    <h2>Por que precisamos de laços?</h2>
+    <p>Imagine imprimir os números de 1 a 1000. Sem laços, você precisaria escrever <strong>1000 linhas</strong> de <code>System.out.println()</code>. Com um laço <code>for</code>, são apenas 3 linhas. Laços automatizam a repetição e são a base de algoritmos reais.</p>
+
+    <div class="loop-grid">
+      <div class="loop-card for-c">
+        <div class="lc-name for-c">for</div>
+        <div class="lc-desc">Ideal quando você sabe <strong>exatamente quantas vezes</strong> o laço vai repetir antes de começar.</div>
+        <div class="lc-badge for-c">CONTAGEM DEFINIDA</div>
+        <div class="lc-use">Ex: percorrer os 12 meses do ano, processar N itens lidos pelo usuário.</div>
+      </div>
+      <div class="loop-card while-c">
+        <div class="lc-name while-c">while</div>
+        <div class="lc-desc">Ideal quando você não sabe quantas iterações haverá — repete <strong>enquanto</strong> uma condição for verdadeira.</div>
+        <div class="lc-badge while-c">CONDIÇÃO NO INÍCIO</div>
+        <div class="lc-use">Ex: ler entradas até o usuário digitar 0, aguardar saldo suficiente.</div>
+      </div>
+      <div class="loop-card do-c">
+        <div class="lc-name do-c">do-while</div>
+        <div class="lc-desc">Garante que o bloco execute <strong>pelo menos uma vez</strong>, depois verifica a condição.</div>
+        <div class="lc-badge do-c">EXECUTA AO MENOS 1×</div>
+        <div class="lc-use">Ex: exibir menu e aguardar opção válida, jogar e perguntar se quer jogar novamente.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOR -->
+  <div class="section">
+    <div class="sec-label">Laço for</div>
+    <h2>Anatomia do for</h2>
+    <p>O <code>for</code> reúne os três elementos de controle em uma única linha: <strong>inicialização</strong>, <strong>condição</strong> e <strong>incremento</strong>.</p>
+
+    <div class="anatomy">
+      <div class="anatomy-title">Anatomia — for ( init ; condição ; incremento )</div>
+      <div class="anatomy-code">
+<span class="kw">for</span> (<span class="part part-init">int i = 0</span> ; <span class="part part-cond">i &lt; 5</span> ; <span class="part part-incr">i++</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="part part-body">System.out.println("i = " + i);</span><br>
+}
+      </div>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--accent)"></div>Inicialização — executada UMA vez antes do laço</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--accent2)"></div>Condição — testada ANTES de cada iteração</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--accent3)"></div>Incremento — executado APÓS cada iteração</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--accent4)"></div>Corpo — executado se a condição for true</div>
+      </div>
+    </div>
+
+    <div class="cb">
+      <div class="cb-head"><span class="cb-lang">JAVA — for</span><button class="cp-btn" onclick="cp(this)">Copiar</button></div>
+      <pre><span class="cm">// Contar de 1 a 5</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">1</span>; <span class="vr">i</span> &lt;= <span class="num">5</span>; <span class="vr">i</span>++) {
+    System.out.<span class="fn">println</span>(<span class="str">"Iteração "</span> + <span class="vr">i</span>);
+}
+
+<span class="cm">// Contar de trás para frente</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">10</span>; <span class="vr">i</span> >= <span class="num">1</span>; <span class="vr">i</span>--) {
+    System.out.<span class="fn">print</span>(<span class="vr">i</span> + <span class="str">" "</span>);
+}
+
+<span class="cm">// Pular de 2 em 2 (números pares)</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">0</span>; <span class="vr">i</span> &lt;= <span class="num">10</span>; <span class="vr">i</span> += <span class="num">2</span>) {
+    System.out.<span class="fn">print</span>(<span class="vr">i</span> + <span class="str">" "</span>);  <span class="cm">// 0 2 4 6 8 10</span>
+}</pre>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">🔢</span>
+      <div class="callout-body"><strong>Variável de controle:</strong> por convenção, usa-se <code>i</code>, <code>j</code>, <code>k</code> para contadores de laço. A variável declarada dentro do <code>for</code> existe apenas dentro dele — não pode ser acessada após o fechamento do bloco.</div>
+    </div>
+  </div>
+
+  <!-- WHILE -->
+  <div class="section">
+    <div class="sec-label">Laço while</div>
+    <h2>while — quando não se sabe o número de iterações</h2>
+    <p>O <code>while</code> verifica a condição <strong>antes</strong> de executar o bloco. Se a condição já for falsa na primeira verificação, o corpo <strong>nunca é executado</strong>.</p>
+
+    <div class="cb">
+      <div class="cb-head"><span class="cb-lang">JAVA — while</span><button class="cp-btn" onclick="cp(this)">Copiar</button></div>
+      <pre><span class="cm">// Lê notas até digitar -1 (sentinela)</span>
+<span class="an">import</span> java.util.Scanner;
+<span class="cl">Scanner</span> sc = <span class="kw">new</span> <span class="cl">Scanner</span>(System.in);
+
+<span class="tp">double</span> <span class="vr">soma</span>  = <span class="num">0</span>;
+<span class="tp">int</span>    <span class="vr">qtd</span>   = <span class="num">0</span>;
+<span class="tp">double</span> <span class="vr">nota</span>  = sc.nextDouble();
+
+<span class="kw">while</span> (<span class="vr">nota</span> != -<span class="num">1</span>) {
+    <span class="vr">soma</span> += <span class="vr">nota</span>;
+    <span class="vr">qtd</span>++;
+    System.out.<span class="fn">print</span>(<span class="str">"Próxima nota (-1 para sair): "</span>);
+    <span class="vr">nota</span> = sc.nextDouble();
+}
+
+<span class="kw">if</span> (<span class="vr">qtd</span> > <span class="num">0</span>)
+    System.out.<span class="fn">printf</span>(<span class="str">"Média: %.2f%n"</span>, <span class="vr">soma</span> / <span class="vr">qtd</span>);</pre>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body"><strong>Loop infinito:</strong> se a condição nunca se tornar falsa, o programa trava. Sempre garanta que o corpo do <code>while</code> modifique a variável testada na condição — caso contrário, use <code>break</code> para sair.</div>
+    </div>
+  </div>
+
+  <!-- DO-WHILE -->
+  <div class="section">
+    <div class="sec-label">Laço do-while</div>
+    <h2>do-while — executa ao menos uma vez</h2>
+    <p>A condição fica <strong>no fim</strong>. O bloco sempre executa pelo menos uma vez — ideal para menus que precisam aparecer antes que o usuário escolha.</p>
+
+    <div class="cb">
+      <div class="cb-head"><span class="cb-lang">JAVA — do-while</span><button class="cp-btn" onclick="cp(this)">Copiar</button></div>
+      <pre><span class="an">import</span> java.util.Scanner;
+<span class="cl">Scanner</span> sc = <span class="kw">new</span> <span class="cl">Scanner</span>(System.in);
+<span class="tp">int</span> <span class="vr">opcao</span>;
+
+<span class="kw">do</span> {
+    System.out.<span class="fn">println</span>(<span class="str">"1. Jogar  2. Regras  0. Sair"</span>);
+    System.out.<span class="fn">print</span>(<span class="str">"Opção: "</span>);
+    <span class="vr">opcao</span> = sc.nextInt();
+
+    <span class="kw">if</span>      (<span class="vr">opcao</span> == <span class="num">1</span>) System.out.<span class="fn">println</span>(<span class="str">"Iniciando jogo..."</span>);
+    <span class="kw">else if</span> (<span class="vr">opcao</span> == <span class="num">2</span>) System.out.<span class="fn">println</span>(<span class="str">"Lendo regras..."</span>);
+
+} <span class="kw">while</span> (<span class="vr">opcao</span> != <span class="num">0</span>);
+
+System.out.<span class="fn">println</span>(<span class="str">"Até logo!"</span>);</pre>
+    </div>
+  </div>
+
+  <!-- BREAK E CONTINUE -->
+  <div class="section">
+    <div class="sec-label">Controle de Fluxo</div>
+    <h2>break e continue</h2>
+    <p><strong>break</strong> encerra o laço imediatamente. <strong>continue</strong> pula para a próxima iteração, ignorando o restante do corpo atual.</p>
+
+    <div class="cb">
+      <div class="cb-head"><span class="cb-lang">JAVA — break e continue</span><button class="cp-btn" onclick="cp(this)">Copiar</button></div>
+      <pre><span class="cm">// break — para ao encontrar o primeiro número divisível por 7</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">1</span>; <span class="vr">i</span> &lt;= <span class="num">100</span>; <span class="vr">i</span>++) {
+    <span class="kw">if</span> (<span class="vr">i</span> % <span class="num">7</span> == <span class="num">0</span>) {
+        System.out.<span class="fn">println</span>(<span class="str">"Primeiro múltiplo de 7: "</span> + <span class="vr">i</span>);
+        <span class="kw">break</span>;
+    }
+}
+
+<span class="cm">// continue — imprime só os ímpares (pula os pares)</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">1</span>; <span class="vr">i</span> &lt;= <span class="num">10</span>; <span class="vr">i</span>++) {
+    <span class="kw">if</span> (<span class="vr">i</span> % <span class="num">2</span> == <span class="num">0</span>) <span class="kw">continue</span>;
+    System.out.<span class="fn">print</span>(<span class="vr">i</span> + <span class="str">" "</span>);  <span class="cm">// 1 3 5 7 9</span>
+}</pre>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body"><strong>Uso de break com cuidado:</strong> muitos <code>break</code> e <code>continue</code> tornam o código difícil de seguir. Prefira sempre ajustar a condição do laço. Use <code>break</code> para casos reais de "encontrei o que procurava" ou validação de sentinel.</div>
+    </div>
+  </div>
+
+  <!-- FOR ANINHADO -->
+  <div class="section">
+    <div class="sec-label">For Aninhado</div>
+    <h2>Laços dentro de laços</h2>
+    <p>Um laço dentro de outro executa o laço interno <strong>completamente</strong> a cada iteração do laço externo. Use variáveis de controle distintas (ex: <code>i</code> e <code>j</code>).</p>
+
+    <div class="cb">
+      <div class="cb-head"><span class="cb-lang">JAVA — for aninhado</span><button class="cp-btn" onclick="cp(this)">Copiar</button></div>
+      <pre><span class="cm">// Tabuada de 1 a 5 × 1 a 5</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">1</span>; <span class="vr">i</span> &lt;= <span class="num">5</span>; <span class="vr">i</span>++) {
+    <span class="kw">for</span> (<span class="tp">int</span> <span class="vr">j</span> = <span class="num">1</span>; <span class="vr">j</span> &lt;= <span class="num">5</span>; <span class="vr">j</span>++) {
+        System.out.<span class="fn">printf</span>(<span class="str">"%4d"</span>, <span class="vr">i</span> * <span class="vr">j</span>);
+    }
+    System.out.<span class="fn">println</span>();  <span class="cm">// nova linha ao fim de cada linha</span>
+}
+
+<span class="cm">// Triângulo de asteriscos</span>
+<span class="kw">for</span> (<span class="tp">int</span> <span class="vr">i</span> = <span class="num">1</span>; <span class="vr">i</span> &lt;= <span class="num">5</span>; <span class="vr">i</span>++) {
+    <span class="kw">for</span> (<span class="tp">int</span> <span class="vr">j</span> = <span class="num">1</span>; <span class="vr">j</span> &lt;= <span class="vr">i</span>; <span class="vr">j</span>++) {
+        System.out.<span class="fn">print</span>(<span class="str">"* "</span>);
+    }
+    System.out.<span class="fn">println</span>();
+}</pre>
+    </div>
+  </div>
+
+  <!-- TABELA COMPARATIVA -->
+  <div class="section">
+    <div class="sec-label">Resumo</div>
+    <h2>Quando usar cada laço</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Laço</th><th>Condição verificada</th><th>Garante 1 execução?</th><th>Quando usar</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>for</td><td>Antes — início</td><td>Não</td><td>Número de iterações conhecido</td></tr>
+          <tr><td>while</td><td>Antes — início</td><td>Não</td><td>Condição pode ser falsa de início</td></tr>
+          <tr><td>do-while</td><td>Depois — fim</td><td>Sim ✓</td><td>Deve executar ao menos 1 vez (menus)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SIMULADOR INTERATIVO -->
+  <div class="section">
+    <div class="sec-label">Simulador</div>
+    <h2>Experimente os laços</h2>
+    <div class="demo-box">
+      <div class="demo-title">🔄 Simulador Interativo — escolha o laço e o limite</div>
+      <div class="demo-controls">
+        <span class="demo-label">Limite:</span>
+        <input type="number" class="demo-input" id="lim-input" value="5" min="1" max="20">
+        <div class="loop-type-sel">
+          <div class="lts on-for" onclick="selLoop('for',this)">for</div>
+          <div class="lts" onclick="selLoop('while',this)">while</div>
+          <div class="lts" onclick="selLoop('do',this)">do-while</div>
+        </div>
+        <button class="run-btn" onclick="runSim()">▶ Executar</button>
+      </div>
+      <div class="demo-output" id="sim-out">// Clique em Executar para ver o laço em ação</div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+</main>
+
+<nav class="nav-footer">
+  <a href="#" class="nav-btn">← Aula 02</a>
+  <a href="java_a03_demo.html" class="nav-btn next">Demo ao Vivo →</a>
+</nav>
+
+<script>
+let loopType = 'for';
+
+function selLoop(t, el) {
+  loopType = t;
+  document.querySelectorAll('.lts').forEach(x => x.className = 'lts');
+  el.classList.add('on-' + t);
+}
+
+function runSim() {
+  const n = Math.min(Math.max(parseInt(document.getElementById('lim-input').value)||5, 1), 20);
+  const out = document.getElementById('sim-out');
+  let lines = [];
+
+  if (loopType === 'for') {
+    lines.push('// for (int i = 1; i <= ' + n + '; i++)');
+    for (let i = 1; i <= n; i++) lines.push('i = ' + i + (i===n ? '  ← condição falsa: ' + i + ' > ' + n + ', laço termina' : ''));
+  } else if (loopType === 'while') {
+    lines.push('// int i = 1; while (i <= ' + n + ')');
+    let i = 1;
+    while (i <= n) { lines.push('i = ' + i); i++; }
+    lines.push('i = ' + i + '  ← condição falsa: ' + i + ' > ' + n + ', sai do while');
+  } else {
+    lines.push('// do { ... } while (i <= ' + n + ')');
+    let i = 1;
+    do { lines.push('i = ' + i + (i === 1 ? '  ← executa ANTES de checar condição' : '')); i++; }
+    while (i <= n);
+    lines.push('i = ' + i + '  ← condição falsa após execução, sai do do-while');
+  }
+
+  lines.push('');
+  lines.push('Total de iterações: ' + n);
+  out.textContent = lines.join('\n');
+}
+
+function cp(btn) {
+  const pre = btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText);
+  btn.textContent = 'Copiado!';
+  setTimeout(() => btn.textContent = 'Copiar', 2000);
+}
+</script>
+</body>
+</html>
